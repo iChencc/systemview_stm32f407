@@ -21,6 +21,13 @@
 #include "main.h"
 #include "cmsis_os.h"
 
+#include "SEGGER_SYSVIEW.h"
+int systemview_init_and_start(void)
+{
+    SEGGER_SYSVIEW_Conf();
+    return 0;
+}
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -116,17 +123,17 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of myTask02 */
-  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 128);
+  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 1024);
   myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
+    systemview_init_and_start();
   /* Start scheduler */
   osKernelStart();
 
@@ -229,7 +236,6 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
 
 }
 
@@ -250,7 +256,8 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+      HAL_UART_Transmit(&huart1, "StartDefaultTask", strlen("StartDefaultTask"), 10);
+    osDelay(1000);
   }
   /* USER CODE END 5 */
 }
@@ -268,7 +275,8 @@ void StartTask02(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+      HAL_UART_Transmit(&huart1, "StartTask02", strlen("StartTask02"), 10);
+    osDelay(1000);
   }
   /* USER CODE END StartTask02 */
 }
