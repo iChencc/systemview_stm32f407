@@ -81,12 +81,15 @@ Additional information:
 #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
 
 
-#define SEGGER_SYSVIEW_RTT_BUFFER_SIZE      (1024*1)       //1122 大小为6K                       
+#define SEGGER_SYSVIEW_RTT_BUFFER_SIZE      (1024*6)                      
 #define SEGGER_SYSVIEW_RTT_CHANNEL          1                                   
 #define SEGGER_SYSVIEW_USE_STATIC_BUFFER    1                                   
 
 #define SEGGER_SYSVIEW_ID_SHIFT             2
 
+
+extern int uart_tx_func(size_t tx_size);
+#define SEGGER_SYSVIEW_ON_EVENT_RECORDED(NumBytes)  uart_tx_func(NumBytes)
 
 #endif  // SEGGER_SYSVIEW_CONF_H
 

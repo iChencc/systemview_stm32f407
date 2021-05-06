@@ -186,15 +186,30 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles USART1 global interrupt.
   */
+#include "systemview_serial_port.h"
 void USART1_IRQHandler(void)
 {
+    uint8_t recv_data;
   /* USER CODE BEGIN USART1_IRQn 0 */
 
   /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
+//    HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */
+    uint32_t isrflags   = READ_REG(huart1.Instance->SR);
+    if ((isrflags & USART_SR_RXNE) != RESET)
+    {
+        __HAL_UART_CLEAR_FLAG(&huart1, USART_SR_RXNE);
+        recv_data = huart1.Instance->DR & 0xFF;
+        systemview_uart_recorder_rx_isr(recv_data);
+    }
+
+    if (((isrflags & USART_SR_TXE) != RESET) && (__HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_TXE)))
+    {
+        __HAL_UART_CLEAR_FLAG(&huart1, USART_SR_TXE);
+        systemview_uart_recorder_tx_empty_isr();
+    }
 }
 
 /* USER CODE BEGIN 1 */

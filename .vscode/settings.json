@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "segger_rtt.h": "c",
+        "segger_sysview.h": "c",
+        "systemview_serial_port.h": "c",
+        "main.h": "c",
+        "stm32f4xx_hal.h": "c",
+        "task.h": "c",
+        "freertos.h": "c"
+    }
+}

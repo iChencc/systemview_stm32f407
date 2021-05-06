@@ -212,7 +212,9 @@ extern "C" {
 */
 #ifndef SEGGER_SYSVIEW_GET_TIMESTAMP
   #if defined (SEGGER_SYSVIEW_CORE) && (SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3)
-    #define SEGGER_SYSVIEW_GET_TIMESTAMP()        (*(U32 *)(0xE0001004))                  // Retrieve a system timestamp. Cortex-M cycle counter.
+// #include "stm32f4xx_hal.h"
+    // #define SEGGER_SYSVIEW_GET_TIMESTAMP()        DWT->CYCCNT                  // Retrieve a system timestamp. Cortex-M cycle counter.
+    #define SEGGER_SYSVIEW_GET_TIMESTAMP()        SEGGER_SYSVIEW_X_GetTimestamp()
   #else
     #define SEGGER_SYSVIEW_GET_TIMESTAMP()        SEGGER_SYSVIEW_X_GetTimestamp()         // Retrieve a system timestamp via user-defined function
   #endif

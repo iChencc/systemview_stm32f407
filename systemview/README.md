@@ -32,3 +32,13 @@
 - 编写配置SEGGER_SYSVIEW_Config_FreeRTOS.c文件
 - FreeRTOSConfig.h 文件添加 #include "SEGGER_SYSVIEW_FreeRTOS.h"
 - main函数调用SEGGER_SYSVIEW_Conf();初始化配置systemview。
+
+## 3. 串口移植适配
+
+### 3.1. 重要函数说明
+- SEGGER_RTT_WriteDownBuffer函数: 将指定数量的字符存储在Down缓冲区的SEGGER RTT控制块中。
+- SEGGER_RTT_ReadUpBufferNoLock函数: 用于执行与J-Link相同的操作，以通过其他通道（例如TCP / IP或UART）传输RTT数据。
+
+### 3.2. 遇到的问题
+
+使用DWT->CYCCNT得到的时间有问题，PC软件端无法计算时间（不清楚问题出在哪里）。
