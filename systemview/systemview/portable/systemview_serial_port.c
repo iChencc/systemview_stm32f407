@@ -6,6 +6,8 @@
 #include "SEGGER_RTT.h"
 #include "SEGGER_SYSVIEW.h"
 
+#include "os_log.h"
+
 /*** (systemview uart recorder sample) ----------------------------------------------------------*/
 #define _SERVER_HELLO_SIZE (4)
 #define _TARGET_HELLO_SIZE (4)
@@ -186,11 +188,26 @@ int uart_tx_func(size_t tx_size)
 #include "task.h"
 U32 SEGGER_SYSVIEW_X_GetTimestamp(void)
 {
-    if (0 != __get_IPSR())
-    {
-        return xTaskGetTickCountFromISR()*168000; //systemview cycle is 168000000
-    }
-    return xTaskGetTickCount()*168000;
+    // if (0 != __get_IPSR())
+    // {
+    //     return xTaskGetTickCountFromISR()*168000; //systemview cycle is 168000000
+    // }
+    // return xTaskGetTickCount()*168000;
+    return DWT->CYCCNT;
+}
+/**
+ * @brief cpu 计数cycle初始化
+ * 
+ * @retval : 0
+ */
+int cycle_count_init(void)
+{
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CYCCNT = 0;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    CIAS_LOG_INFO("DWT->CTRL reg:%x", DWT->CTRL);
+
+    return 0;
 }
 /*** (对外接口，初始化) ----------------------------------------------------------*/
 /**
@@ -208,6 +225,7 @@ int systemview_uart_recorder_init(void)
     _SVInfo.NumBytesHelloSent = 0;
     //PORT 串口初始化
     //uart_init();
+    cycle_count_init();
 
     return 0;
 }

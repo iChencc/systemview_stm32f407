@@ -41,4 +41,6 @@
 
 ### 3.2. 遇到的问题
 
-使用DWT->CYCCNT得到的时间有问题，PC软件端无法计算时间（不清楚问题出在哪里）。
+使用DWT->CYCCNT得到的时间有问题，PC软件端无法计算时间。
+- 问题定位：用jlink debug模式下使用DWT->CYCCNT可以获取到时间，直接下载代码无法获取时间。
+- 问题解决：在没有使用jlink debug的时候，没有使能DWT模块。需要设置CoreDebug->DEMCR寄存器CoreDebug_DEMCR_TRCENA_Msk位为1:DWT and ITM units enabled. 然后使用硬件复位按钮复位系统(不能使用jlink复位)。
