@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\systemview\systemview;..\systemview\systemview\Config;..\systemview\systemview\FreeRTOSV10;..\systemview\systemview\portable</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\systemview\systemview;..\systemview\systemview\Config;..\systemview\systemview\FreeRTOSV10;..\systemview\systemview\portable;..\systemview\os_kernel</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -591,6 +591,11 @@
               <FileName>systemview_serial_port.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\systemview\systemview\portable\systemview_serial_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>os_log_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\systemview\os_kernel\os_log_port.c</FilePath>
             </File>
           </Files>
         </Group>
