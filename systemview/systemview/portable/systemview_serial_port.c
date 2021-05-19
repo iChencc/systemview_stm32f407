@@ -1,3 +1,10 @@
+/**
+ * @file systemview_serial_port.c
+ * @brief stm32f407 systemview uart recorder 移植适配文件
+ * @author JasonChan (x@chencc.cc)
+ * @date 2021-05-19
+ * @copyright Copyright (c) 2021
+ */
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -47,7 +54,7 @@ static void _cbOnRx(uint8_t Data)
     if (_SVInfo.NumBytesHelloRcvd < _SERVER_HELLO_SIZE)
     { // Not all bytes of <Hello> message received by SysView yet?
         _SVInfo.NumBytesHelloRcvd++;
-        //TODO 目前版本V3.30，增加这个判断才能正确启动？  change by JasonChan
+        //TODO 目前版本V3.30，增加这个判断才能正确启动。change by JasonChan
         if (_SVInfo.NumBytesHelloRcvd == _SERVER_HELLO_SIZE - 1)
         {
             _StartSysView();
@@ -182,7 +189,7 @@ int systemview_uart_recorder_init(void)
     _SVInfo.NumBytesHelloRcvd = 0;
     _SVInfo.NumBytesHelloSent = 0;
     //PORT 串口初始化
-    uart_init();
+    // uart_init();
     cpu_cycle_count_enable();
 
     return 0;
