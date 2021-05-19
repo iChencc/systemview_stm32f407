@@ -53,10 +53,13 @@ extern int uart_tx_func(size_t tx_size);
 ### 3.3. Cortex-M4核DTW(Data Watchpoint and Trace)模块开启CPU Cycle Count功能
 
 SystemView当定义
+
 ```c
 #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
 ```
+
 时，记录器获取时间戳的来源是DTW->CYCCNT(地址0xE0001004)寄存器。记录CPU运行的cycle，CPU正常运行的话其周期就是CPU的频率。
+
 - 遇到问题：用jlink debug模式下使用DWT->CYCCNT可以获取到时间，当直接下载代码无法获取时间。
 - 问题定位：在没有使用jlink debug的时候，没有使能DWT模块。
 - 问题解决：需要设置CoreDebug->DEMCR寄存器CoreDebug_DEMCR_TRCENA_Msk位为1(DWT and ITM units enabled)。并且需要使用硬件复位按钮复位系统(不能使用jlink复位)，这是由于jlink复位按钮不会复位CoreDebug模块，并且通过jlink下载程序后，jlink对CoreDebug有控制权，CPU没有，程序写入其寄存器无效。
