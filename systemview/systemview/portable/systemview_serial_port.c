@@ -141,8 +141,6 @@ void uart_hw_tx(uint8_t *pData, size_t size)
         }
     }
 }
-// #define TX_BUFFER_SZ 2000
-// static uint8_t uart_tx_buffer[TX_BUFFER_SZ];
 /**
  * @brief 串口发送函数
  * 
@@ -151,56 +149,16 @@ void uart_hw_tx(uint8_t *pData, size_t size)
  */
 int uart_tx_func(size_t tx_size)
 {
-    // uint8_t data;
-
-    // for (size_t i = 0; i < tx_size; i++)
-    // {
-    //     if (_cbOnTx(&data) == 1)
-    //     {
-    //         uart_hw_tx(&data, 1);
-    //     }
-    // }
-
-    // int rc;
-
-    // if (_SVInfo.NumBytesHelloSent == 0)
-    // {
-    //     uart_hw_tx(_abHelloMsg, _TARGET_HELLO_SIZE);
-    //     _SVInfo.NumBytesHelloSent = 1;
-    // }
-    // rc = SEGGER_RTT_ReadUpBufferNoLock(_SVInfo.ChannelID, uart_tx_buffer, TX_BUFFER_SZ);
-    // if (rc > 0)
-    // {
-    //     uart_hw_tx(uart_tx_buffer, rc);
-    // }
-
-    // static size_t tmp_data = 0;
-
-    // tmp_data = tx_size;
-
-    // uart_hw_tx((uint8_t *)(&tmp_data), 4);
-
     uart_hw_enable_tx_empty_interrupt();
     return 0;
 }
 /*** (时间戳) ----------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-U32 SEGGER_SYSVIEW_X_GetTimestamp(void)
-{
-    // if (0 != __get_IPSR())
-    // {
-    //     return xTaskGetTickCountFromISR()*168000; //systemview cycle is 168000000
-    // }
-    // return xTaskGetTickCount()*168000;
-    return DWT->CYCCNT;
-}
 /**
  * @brief cpu 计数cycle初始化
  * 
  * @retval : 0
  */
-int cycle_count_init(void)
+int cpu_cycle_count_enable(void)
 {
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
     DWT->CYCCNT = 0;
@@ -224,8 +182,8 @@ int systemview_uart_recorder_init(void)
     _SVInfo.NumBytesHelloRcvd = 0;
     _SVInfo.NumBytesHelloSent = 0;
     //PORT 串口初始化
-    //uart_init();
-    cycle_count_init();
+    uart_init();
+    cpu_cycle_count_enable();
 
     return 0;
 }
