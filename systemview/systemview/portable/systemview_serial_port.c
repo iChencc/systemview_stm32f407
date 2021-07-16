@@ -19,15 +19,19 @@
 #define _SERVER_HELLO_SIZE (4)
 #define _TARGET_HELLO_SIZE (4)
 
-static uint8_t _abHelloMsg[_TARGET_HELLO_SIZE] = {'S', 'V', (SEGGER_SYSVIEW_VERSION / 10000), (SEGGER_SYSVIEW_VERSION / 1000) % 10}; // "Hello" message expected by SysView: [ 'S', 'V', <PROTOCOL_MAJOR>, <PROTOCOL_MINOR> ]
+// "Hello" message expected by SysView: [ 'S', 'V', <PROTOCOL_MAJOR>, <PROTOCOL_MINOR> ]
+static uint8_t _abHelloMsg[_TARGET_HELLO_SIZE] = \
+    {'S', 'V', (SEGGER_SYSVIEW_VERSION / 10000), 
+    (SEGGER_SYSVIEW_VERSION / 1000) % 10}; 
+
 /**
  * @brief systemview信息
  * 
  */
 static struct SVInfo_t
 {
-    uint8_t NumBytesHelloRcvd;
-    uint8_t NumBytesHelloSent;
+    uint8_t NumBytesHelloRcvd;  // 接收hello info计数
+    uint8_t NumBytesHelloSent;  // 发送hello info计数
     int ChannelID;
 } _SVInfo;
 /**
@@ -52,18 +56,33 @@ static void _StartSysView(void)
 static void _cbOnRx(uint8_t Data)
 {
     if (_SVInfo.NumBytesHelloRcvd < _SERVER_HELLO_SIZE)
-    { // Not all bytes of <Hello> message received by SysView yet?
+    {
+        if (_SVInfo.NumBytesHelloRcvd < 2)
+        {   
+            //  recv 'SV' to start
+            if (Data != _abHelloMsg[_SVInfo.NumBytesHelloRcvd])
+            {
+                return;
+            }
+        }
         _SVInfo.NumBytesHelloRcvd++;
-        //TODO 目前版本V3.30，增加这个判断才能正确启动。change by JasonChan
+
         if (_SVInfo.NumBytesHelloRcvd == _SERVER_HELLO_SIZE - 1)
         {
             _StartSysView();
         }
-        goto Done;
     }
-    SEGGER_RTT_WriteDownBuffer(_SVInfo.ChannelID, &Data, 1); // Write data into corresponding RTT buffer for application to read and handle accordingly
-Done:
-    return;
+    else 
+    {
+        // Write data into corresponding RTT buffer 
+        // for application to read and handle accordingly
+        SEGGER_RTT_WriteDownBuffer(_SVInfo.ChannelID, &Data, 1);
+        if (SEGGER_SYSVIEW_IsStarted() == 0)
+        {
+            // when recv stop command clear NumBytesHelloRcvd
+            _SVInfo.NumBytesHelloRcvd = 0;
+        }
+    }
 }
 /**
  * @brief This function is called when the UART should transmit data.
